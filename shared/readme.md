@@ -1,0 +1,1 @@
+This is where K8s nodes pass configuration e.g. join configuration

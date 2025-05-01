@@ -21,9 +21,11 @@ Vagrant.configure("2") do |config|
             # Expose Kubernetes API server port to host from master node
             if name == "master"
                 node.vm.network "forwarded_port", guest: 6443, host: 6443, auto_correct: true
+                node.vm.synched_folder "manifests", "/vagrant", type: "rsync"
+                node.vm.provision "shell", path: "scripts/master.sh"
             end
 
-            node.vm.provision "shell", path: "scripts/provisioning.sh"
+            #node.vm.provision "shell", path: "scripts/provisioning.sh"
         end
     end
 end
