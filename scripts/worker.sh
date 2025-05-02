@@ -68,19 +68,25 @@ sysctl --system
 
 echo "✅ Kubernetes ${K8S_VERSION} setup complete."
 
-# 8. Initialize Kubernetes master node
-echo "🚀 Initializing Kubernetes master node..."
-kudeadm init --config="/vagrant/kubeadm-config.yml"
+# 8. Join the cluster
+# Variables
+JOIN_FILE="/vagrant/shared/join.sh"
 
-# 9. Set up kubeconfig for root user
-echo "🔐 Setting up kubeconfig for vagrant user..."
-mkdir -p /home/vagrant/.kube
-cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
-chown vagrant:vagrant /home/vagrant/.kube/config
+echo "🔍 Waiting for join command from master..."
 
-# 10. Install Flannel CNI
-echo "🌐 Installing Flannel CNI..."
-su - vagrant -c "kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml"
+# Wait up to 60 seconds for the join script to appear
+for i in {1..60}; do
+  if [ -f "$JOIN_FILE" ]; then
+    echo "🔗 Found join script — joining the cluster..."
+    bash "$JOIN_FILE"
+    echo "✅ Worker joined the cluster."
+    exit 0
+  fi
+  sleep 2
+done
+
+echo "❌ Timed out waiting for join script at $JOIN_FILE"
+exit 1
 
 
 

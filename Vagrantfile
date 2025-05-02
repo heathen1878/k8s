@@ -19,13 +19,17 @@ Vagrant.configure("2") do |config|
             end
 
             # Expose Kubernetes API server port to host from master node
-            if name == "master"
+            if name == "k8s-master"
                 node.vm.network "forwarded_port", guest: 6443, host: 6443, auto_correct: true
-                node.vm.synched_folder "manifests", "/vagrant", type: "rsync"
+                node.vm.synced_folder "manifests", "/vagrant/manifests", type: "virtualbox"
+                node.vm.synced_folder "shared", "/vagrant/shared", type: "virtualbox"
                 node.vm.provision "shell", path: "scripts/master.sh"
             end
 
-            #node.vm.provision "shell", path: "scripts/provisioning.sh"
+            if name == "k8s-worker1" || name == "k8s-worker2"
+                node.vm.synced_folder "shared", "/vagrant/shared", type: "virtualbox"
+                node.vm.provision "shell", path: "scripts/worker.sh"
+            end
         end
     end
 end

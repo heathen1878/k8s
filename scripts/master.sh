@@ -68,9 +68,12 @@ sysctl --system
 
 echo "✅ Kubernetes ${K8S_VERSION} setup complete."
 
+# Variables
+JOIN_FILE="/vagrant/shared/join.sh"
+
 # 8. Initialize Kubernetes master node
 echo "🚀 Initializing Kubernetes master node..."
-kudeadm init --config="/vagrant/kubeadm-config.yml"
+kubeadm init --config="/vagrant/manifests/kubeadm-config.yml"
 
 # 9. Set up kubeconfig for root user
 echo "🔐 Setting up kubeconfig for vagrant user..."
@@ -82,6 +85,9 @@ chown vagrant:vagrant /home/vagrant/.kube/config
 echo "🌐 Installing Flannel CNI..."
 su - vagrant -c "kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml"
 
+# 11. Generate join command for worker nodes
+echo "🔗 Generating join command for workers..."
+kubeadm token create --print-join-command > "$JOIN_FILE"
+chmod +x "$JOIN_FILE"
 
-
-
+echo "✅ Master initialization complete. Join command written to $JOIN_FILE"
