@@ -2,6 +2,8 @@
 KUBECONFIG_FILE=~/.kube/config
 VAGRANT_CONFIG_DIR=shared
 JOIN_SCRIPT_PATH=$(VAGRANT_CONFIG_DIR)/join.sh
+BRIDGE_IFACE ?= wlp4s0
+export BRIDGE_IFACE
 
 # Show help with descriptions
 help:

@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
             node.vm.boot_timeout = 180
 
             # Add bridged adapter; this will be used for all communication after the initial conifguration.
-            node.vm.network "public_network", ip: nil, bridge: bridge_iface, auto_config: false
+            node.vm.network "public_network", bridge: bridge_iface, auto_config: false, adapter: 2
 
             node.vm.provider "virtualbox" do |vb|
                 vb.name = name
@@ -29,13 +29,27 @@ Vagrant.configure("2") do |config|
                 vb.cpus = details['cpus'] || 2
                 vb.customize ["modifyvm", :id, "--uartmode1", "disconnected"]
                 vb.customize ["modifyvm", :id, "--macaddress2", "auto"]
+                vb.customize ["modifyvm", :id, "--audio", "none"]                # No audio
+                vb.customize ["modifyvm", :id, "--usb", "off"]                   # No USB controller
+                vb.customize ["modifyvm", :id, "--usbehci", "off"]               # No EHCI USB
+                vb.customize ["modifyvm", :id, "--usbxhci", "off"]               # No xHCI USB
+                vb.customize ["modifyvm", :id, "--clipboard", "disabled"]        # No shared clipboard
+                vb.customize ["modifyvm", :id, "--draganddrop", "disabled"]      # No drag-and-drop
+                vb.customize ["modifyvm", :id, "--mouse", "none"]                # No mouse emulation
+                vb.customize ["modifyvm", :id, "--keyboard", "ps2"]              # Use basic keyboard
+                vb.customize ["modifyvm", :id, "--accelerate3d", "off"]          # No 3D acceleration
+                #vb.customize ["modifyvm", :id, "--accelerate2dvideo", "off"]     # No 2D acceleration
+                vb.customize ["modifyvm", :id, "--vram", "16"]                   # Minimal video RAM
+                vb.customize ["modifyvm", :id, "--uartmode1", "disconnected"]    # Disable serial port
+                #vb.customize ["storagectl", :id, "--name", "IDE Controller", "--remove"]
+                #vb.customize ["storageattach", :id, "--storagectl", "IDE Controller", "--port", "1", "--device", "0", "--type", "dvddrive", "--medium", "none"]
             end
 
             node.vm.synced_folder "shared", "/vagrant/shared", type: "virtualbox"
-            if role == master
+            if role == "master"
                 node.vm.synced_folder "manifests", "/vagrant/manifests", type: "virtualbox"
-                node.provision "shell", path: "scripts/master.sh", env: { "STATIC_IP" => ip}
-            elsif role == worker
+                node.vm.provision "shell", path: "scripts/master.sh", env: { "STATIC_IP" => ip}
+            elsif role == "worker"
                 node.vm.provision "shell", path: "scripts/worker.sh", env: { "STATIC_IP" => ip}
             end
         end
