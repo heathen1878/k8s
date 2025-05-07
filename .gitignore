@@ -1,2 +1,5 @@
 .vagrant/*
 shared/join.sh
+vagrant/*
+*.box
+*.vdi
