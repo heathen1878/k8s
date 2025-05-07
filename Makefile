@@ -29,6 +29,16 @@ rebuild: ## Rebuild entire cluster
 	@vagrant up
 	@echo "Cluster rebuilt successfully."
 
+start: ## Start Kubernetes cluster
+	@echo "🚀 Starting Kubernetes cluster..."
+	@vagrant up
+	@echo "Cluster started successfully."
+
+stop: ## Stop Kubernetes cluster
+	@echo "⏸️ Stopping Kubernetes cluster..."
+	@vagrant halt
+	@echo "Cluster stopped successfully."
+
 vagrant-status: ## Get Vagrant status
 	@echo "🔍 Get Vagrant status..."
 	@vagrant status
@@ -39,6 +49,18 @@ kubeconfig: ## Copy kubeconfig from master to host machine
 	@chmod 600 $(KUBECONFIG_FILE)
 	@echo "✅ KUBECONFIG updated at $(KUBECONFIG_FILE)"
 
+ssh-master: ## SSH into master node
+	@echo "🔑 SSH into master node..."
+	vagrant ssh k8s-master
+
+ssh-worker1: ## SSH into worker node 1
+	@echo "🔑 SSH into worker node..."
+	vagrant ssh k8s-worker1
+
+ssh-worker2: ## SSH into worker node 2
+	@echo "🔑 SSH into worker node..."
+	vagrant ssh k8s-worker2
+	
 status: ## Show cluster status
 	kubectl get nodes -o wide
 
@@ -49,4 +71,4 @@ clean: ## Clean up everything
 	rm -f $(JOIN_SCRIPT_PATH)
 
 
-.PHONY: build rebuild kubeconfig status clean
+.PHONY: help build rebuild vagrant-status start stop kubeconfig ssh-master ssh-worker1 ssh-worker2 status clean
