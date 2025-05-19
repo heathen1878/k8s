@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
             node.vm.boot_timeout = 180
 
             # Add bridged adapter; this will be used for all communication after the initial conifguration.
-            node.vm.network "public_network", bridge: bridge_iface, auto_config: false, adapter: 2
+            node.vm.network "public_network", bridge: bridge_iface, auto_config: false, adapter: 2, promiscuous_mode: "allow_all"
 
             node.vm.provider "virtualbox" do |vb|
                 vb.name = name

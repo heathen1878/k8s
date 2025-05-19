@@ -21,7 +21,10 @@ build: ## Build Kubernetes cluster
 	@chmod 600 $(KUBECONFIG_FILE)
 	@echo "✅ KUBECONFIG updated at $(KUBECONFIG_FILE)"
 	@echo "Kubernetes nodes"
+	sleep 30
 	kubectl get nodes -o wide
+	@echo "Installing and configuring Kube VIP..."
+	kubectl apply -f -f manifests/kubevip-config.yml
 
 rebuild: ## Rebuild entire cluster
 	@echo "🔁 Destroying and rebuilding Kubernetes cluster..."
