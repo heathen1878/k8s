@@ -21,12 +21,13 @@ Vagrant.configure("2") do |config|
             node.vm.boot_timeout = 180
 
             # Add bridged adapter; this will be used for all communication after the initial conifguration.
-            node.vm.network "public_network", bridge: bridge_iface, auto_config: false, adapter: 2, promiscuous_mode: "allow_all"
+            node.vm.network "public_network", bridge: bridge_iface, auto_config: false, adapter: 2
 
             node.vm.provider "virtualbox" do |vb|
                 vb.name = name
                 vb.memory = details['memory'] || 2048
                 vb.cpus = details['cpus'] || 2
+                vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
                 vb.customize ["modifyvm", :id, "--uartmode1", "disconnected"]
                 vb.customize ["modifyvm", :id, "--macaddress2", "auto"]
                 vb.customize ["modifyvm", :id, "--audio", "none"]                # No audio

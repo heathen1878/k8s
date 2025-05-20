@@ -1,73 +1,62 @@
 apiVersion: v1
-kind: ServiceAccount
-metadata:
-    name: kube-vip
-    namespace: kube-system
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: kube-vip-role
-rules:
-  - apiGroups: [""]
-    resources: ["services", "services/status"]
-    verbs: ["get", "list", "watch", "update", "patch"]
-  - apiGroups: ["coordination.k8s.io"]
-    resources: ["leases"]
-    verbs: ["get", "list", "watch", "create", "update", "patch"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: kube-vip-binding
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: kube-vip-role
-subjects:
-  - kind: ServiceAccount
-    name: kube-vip
-    namespace: kube-system
----
-apiVersion: v1
 kind: ConfigMap
 metadata:
   name: kubevip
   namespace: kube-system
 data:
-  range-global: 192.168.188.200-192.168.188.210
-  range-votingapp: 192.168.188.211-192.168.188.212
-  range-ddd: 192.168.188.213-192.168.188.213
+  range-global: 192.168.188.240-192.168.188.250
+  range-votingapp: 192.168.188.210-192.168.188.211
+  range-ddd: 192.168.188.212-192.168.188.215
 ---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
+  labels:
+    app.kubernetes.io/name: kube-vip
+    app.kubernetes.io/version: v0.9.1
   name: kube-vip
   namespace: kube-system
 spec:
   selector:
     matchLabels:
-      name: kube-vip
+      app.kubernetes.io/name: kube-vip
   template:
     metadata:
       labels:
-        name: kube-vip
+        app.kubernetes.io/name: kube-vip
+        app.kubernetes.io/version: v0.9.1
     spec:
-      serviceAccountName: kube-vip
-      hostNetwork: true
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+             - matchExpressions:
+               - key: kubernetes.io/hostname
+                 operator: In
+                 values:
+                  - k8s-worker1
+                  - k8s-worker2
       containers:
-        - name: kube-vip
-          image: ghcr.io/kube-vip/kube-vip:latest
-          args:
-            - manager
-            - --services
-            - --interface=enp0s8
-            - --arp
-            - --leaderElection
-          securityContext:
-            capabilities:
-              add:
-                - NET_ADMIN
-                - NET_RAW
+       - name: kube-vip
+         args:
+          - manager
+          - --services
+          - --interface=enp0s8
+          - --arp
+          - --leaderElection
+         image: ghcr.io/kube-vip/kube-vip:v0.9.1
+         imagePullPolicy: IfNotPresent
+         securityContext:
+           capabilities:
+             add:
+              - NET_ADMIN
+              - NET_RAW
+             drop:
+              - ALL
+      hostNetwork: true
+      serviceAccountName: kube-vip
       tolerations:
-        - operator: "Exists"
+        - effect: NoSchedule
+          operator: Exists
+        - effect: NoExecute
+          operator: Exists
