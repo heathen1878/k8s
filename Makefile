@@ -2,7 +2,7 @@
 KUBECONFIG_FILE=~/.kube/config
 VAGRANT_CONFIG_DIR=shared
 JOIN_SCRIPT_PATH=$(VAGRANT_CONFIG_DIR)/join.sh
-BRIDGE_IFACE ?= wlp4s0
+BRIDGE_IFACE ?= enp1s0f0
 export BRIDGE_IFACE
 
 # Show help with descriptions
@@ -16,38 +16,25 @@ build: ## Build Kubernetes cluster
 	@echo "🚀 Building Kubernetes cluster..."
 	@vagrant up
 	@echo "Cluster built successfully."
+	@sleep 30
 	@echo "📥 Copying kubeconfig to host machine..."
 	@vagrant ssh k8s-master -c "sudo cat /etc/kubernetes/admin.conf" > $(KUBECONFIG_FILE)
 	@chmod 600 $(KUBECONFIG_FILE)
 	@echo "✅ KUBECONFIG updated at $(KUBECONFIG_FILE)"
 	@echo "Kubernetes nodes"
-	kubectl get nodes -o wide
+	@kubectl get nodes -o wide
+	@sleep 20
+	@echo "Installing and configuring Kube VIP..."
+	@kubectl apply -f https://kube-vip.io/manifests/rbac.yaml
+	@kubectl apply -f manifests/kubevip-config.yml
+	@kubectl apply -f https://raw.githubusercontent.com/kube-vip/kube-vip-cloud-provider/main/manifest/kube-vip-cloud-controller.yaml
+
 
 rebuild: ## Rebuild entire cluster
 	@echo "🔁 Destroying and rebuilding Kubernetes cluster..."
-	@vagrant destroy -f
-	@vagrant up
+	@make clean
+	@make build
 	@echo "Cluster rebuilt successfully."
-
-start: ## Start Kubernetes cluster
-	@echo "🚀 Starting Kubernetes cluster..."
-	@vagrant up
-	@echo "Cluster started successfully."
-
-stop: ## Stop Kubernetes cluster
-	@echo "⏸️ Stopping Kubernetes cluster..."
-	@vagrant halt
-	@echo "Cluster stopped successfully."
-
-vagrant-status: ## Get Vagrant status
-	@echo "🔍 Get Vagrant status..."
-	@vagrant status
-
-kubeconfig: ## Copy kubeconfig from master to host machine
-	@echo "📥 Copying kubeconfig from master node..."
-	vagrant ssh k8s-master -c "sudo cat /etc/kubernetes/admin.conf" > $(KUBECONFIG_FILE)
-	@chmod 600 $(KUBECONFIG_FILE)
-	@echo "✅ KUBECONFIG updated at $(KUBECONFIG_FILE)"
 
 ssh-master: ## SSH into master node
 	@echo "🔑 SSH into master node..."
@@ -61,9 +48,6 @@ ssh-worker2: ## SSH into worker node 2
 	@echo "🔑 SSH into worker node..."
 	vagrant ssh k8s-worker2
 	
-status: ## Show cluster status
-	kubectl get nodes -o wide
-
 clean: ## Clean up everything
 	@echo "🧹 Cleaning up..."
 	vagrant destroy -f
@@ -71,4 +55,4 @@ clean: ## Clean up everything
 	rm -f $(JOIN_SCRIPT_PATH)
 
 
-.PHONY: help build rebuild vagrant-status start stop kubeconfig ssh-master ssh-worker1 ssh-worker2 status clean
+.PHONY: help build rebuild ssh-master ssh-worker1 ssh-worker2 clean

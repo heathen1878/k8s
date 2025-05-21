@@ -27,6 +27,7 @@ Vagrant.configure("2") do |config|
                 vb.name = name
                 vb.memory = details['memory'] || 2048
                 vb.cpus = details['cpus'] || 2
+                vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
                 vb.customize ["modifyvm", :id, "--uartmode1", "disconnected"]
                 vb.customize ["modifyvm", :id, "--macaddress2", "auto"]
                 vb.customize ["modifyvm", :id, "--audio", "none"]                # No audio
