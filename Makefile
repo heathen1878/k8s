@@ -28,6 +28,8 @@ build: ## Build Kubernetes cluster
 	@kubectl apply -f https://kube-vip.io/manifests/rbac.yaml
 	@kubectl apply -f manifests/kubevip-config.yml
 	@kubectl apply -f https://raw.githubusercontent.com/kube-vip/kube-vip-cloud-provider/main/manifest/kube-vip-cloud-controller.yaml
+	@kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.3/deploy/static/provider/cloud/deploy.yaml
+
 
 
 rebuild: ## Rebuild entire cluster
