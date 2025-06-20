@@ -13,7 +13,7 @@ controller:
   containerSecurityContext:
     capabilities:
       drop:
-        - ALL
+        - NET_RAW
   extraVolumeMounts:
     - name: tmp
       mountPath: /tmp
