@@ -1,0 +1,16 @@
+controller:
+  replicaCount: 2
+  service:
+    type: LoadBalancer
+  securityContext:
+    runAsUser: 101
+    runAsGroup: 101
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    seccompProfile:
+      type: RuntimeDefault
+  containerSecurityContext:
+    capabilities:
+      drop:
+        - ALL

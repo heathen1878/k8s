@@ -28,9 +28,10 @@ build: ## Build Kubernetes cluster
 	@kubectl apply -f https://kube-vip.io/manifests/rbac.yaml
 	@kubectl apply -f manifests/kubevip-config.yml
 	@kubectl apply -f https://raw.githubusercontent.com/kube-vip/kube-vip-cloud-provider/main/manifest/kube-vip-cloud-controller.yaml
-	@kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.3/deploy/static/provider/cloud/deploy.yaml
-
-
+	@echo "Installing NGINX as an Ingress Controller using Helm"
+	@helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+	@helm repo update
+	@helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx --create-namespace -f helm/nginx/values.yaml
 
 rebuild: ## Rebuild entire cluster
 	@echo "🔁 Destroying and rebuilding Kubernetes cluster..."
@@ -55,6 +56,5 @@ clean: ## Clean up everything
 	vagrant destroy -f
 	rm -f $(KUBECONFIG_FILE)
 	rm -f $(JOIN_SCRIPT_PATH)
-
 
 .PHONY: help build rebuild ssh-master ssh-worker1 ssh-worker2 clean
