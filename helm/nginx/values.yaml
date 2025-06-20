@@ -17,12 +17,16 @@ controller:
   extraVolumeMounts:
     - name: tmp
       mountPath: /tmp
+    - name: tmp-nginx
+      mountPath: /tmp/nginx
     - name: cache
       mountPath: /var/cache/nginx
     - name: run
       mountPath: /var/run
   extraVolumes:
     - name: tmp
+      emptyDir: {}
+    - name: tmp-nginx
       emptyDir: {}
     - name: cache
       emptyDir: {}
