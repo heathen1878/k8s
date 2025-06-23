@@ -18,7 +18,16 @@ Added Federated Identity functionality.
 
 This requires the steps documented [here](https://azure.github.io/azure-workload-identity/docs/introduction.html) are followed...
 
-The RSA keys must reside in the manifests folder...
+The RSA keys must reside in the manifests folder...the script will copy them into the correct location as defined in `kubeadm-config.yaml`.
+
+```json
+{
+  ..
+  service-account-signing-key-file: "/etc/kubernetes/pki/sa.key"
+  service-account-key-file: "/etc/kubernetes/pki/sa.pub"
+  ..
+}
+```
 
 Steps:
 
@@ -42,6 +51,8 @@ nodes:
     ip: ip_address
     role: worker
 ```
+
+**NOTE**: You'll be prompted for your Azure Tenant GUID for Federated Identity functionality.
 
 ```shell
 # This will build a fresh cluster and copy the kube configuration locally.
