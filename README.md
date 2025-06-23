@@ -18,6 +18,8 @@ Added Federated Identity functionality.
 
 This requires the steps documented [here](https://azure.github.io/azure-workload-identity/docs/introduction.html) are followed...
 
+The RSA keys must reside in the manifests folder...
+
 Steps:
 
 ```shell

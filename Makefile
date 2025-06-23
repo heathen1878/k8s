@@ -24,6 +24,7 @@ build: ## Build Kubernetes cluster
 	@echo "Kubernetes nodes"
 	@kubectl get nodes -o wide
 	@sleep 20
+	@echo "Installing mutating Admission Webhook for Federated Identity"
 	@echo "Installing and configuring Kube VIP..."
 	@kubectl apply -f https://kube-vip.io/manifests/rbac.yaml
 	@kubectl apply -f manifests/kubevip-config.yml
