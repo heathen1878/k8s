@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euxo pipefail
+set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
 
 STATIC_IP="${STATIC_IP:-192.168.188.20}"
