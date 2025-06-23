@@ -118,8 +118,8 @@ echo "✅ Kubernetes ${K8S_VERSION} setup complete."
 JOIN_FILE="/vagrant/shared/join.sh"
 
 # 8. Initialize Kubernetes master node
-echo "🚀 Initializing Kubernetes master node..."
-kubeadm init --config="/vagrant/manifests/kubeadm-config.yml"
+echo "🚀 Initializing Kubernetes master node...🔐 Using Federated Identity"
+kubeadm init --config="/vagrant/manifests/kubeadm-config-fed.yml"
 
 # 9. Set up kubeconfig for root user
 echo "🔐 Setting up kubeconfig for vagrant user..."

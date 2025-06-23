@@ -8,6 +8,12 @@ apiServer:
     - "192.168.188.10"
   extraArgs:
     advertise-address: "192.168.188.10"
+    service-account-issuer: ""
+    service-account-signing-key-file: ""
+    service-account-key-file: ""
+controllerManager:
+  extraArgs:
+    service-account-private-key-file: ""
 networking:
   podSubnet: "10.244.0.0/16"
   serviceSubnet: "10.96.0.0/12"
