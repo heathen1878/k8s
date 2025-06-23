@@ -12,6 +12,12 @@ The cluster comprises of....
  - Kube VIP load balancer and kube VIP cloud controller
  - NGINX Ingress controller
 
+### v1.1.0
+
+Added Federated Identity functionality. 
+
+This requires the steps documented [here](https://azure.github.io/azure-workload-identity/docs/introduction.html) are followed...
+
 Steps:
 
 ```shell

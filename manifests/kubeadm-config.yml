@@ -8,12 +8,12 @@ apiServer:
     - "192.168.188.10"
   extraArgs:
     advertise-address: "192.168.188.10"
-    service-account-issuer: ""
-    service-account-signing-key-file: ""
-    service-account-key-file: ""
+    service-account-issuer: "https://stc7d1e634be3cb8b29f8d.blob.core.windows.net/oidc/.well-known/openid-configuration"
+    service-account-signing-key-file: "sa.key"
+    service-account-key-file: "sa.pub"
 controllerManager:
   extraArgs:
-    service-account-private-key-file: ""
+    service-account-private-key-file: "sa.key"
 networking:
   podSubnet: "10.244.0.0/16"
   serviceSubnet: "10.96.0.0/12"
