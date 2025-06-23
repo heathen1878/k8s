@@ -9,7 +9,7 @@ apiServer:
   extraArgs:
     advertise-address: "192.168.188.10"
     service-account-issuer: "https://stc7d1e634be3cb8b29f8d.blob.core.windows.net/oidc"
-    service-account-signing-key-file: "/vagrant/manifests/sa.pub"
+    service-account-signing-key-file: "/vagrant/manifests/sa.key"
     service-account-key-file: "/vagrant/manifests/sa.pub"
     service-account-jwks-uri: "https://stc7d1e634be3cb8b29f8d.blob.core.windows.net/oidc/openid/v1/jwks"
 controllerManager:
