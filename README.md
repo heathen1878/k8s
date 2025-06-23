@@ -1,6 +1,16 @@
 # Kubernetes
 
+## Versions
+
+### v1.0.0
+
 This repo contains the code to build a K8s cluster using Vagrant.
+
+The cluster comprises of....
+ - 3 nodes; 1 node runs all control plane components and 2 worker nodes
+ - CNI uses flannel
+ - Kube VIP load balancer and kube VIP cloud controller
+ - NGINX Ingress controller
 
 Steps:
 
