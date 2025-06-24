@@ -58,7 +58,7 @@ apiServer:
 ...
 ```
 
-Steps:
+# Steps
 
 ```shell
 make help
