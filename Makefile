@@ -28,8 +28,8 @@ build: ## Build Kubernetes cluster
 	@read -p "Paste or type your Azure Tenant GUID: " TENANT_ID; \
 		helm repo add azure-workload-identity https://azure.github.io/azure-workload-identity/charts; \
 		helm repo update  > /dev/null 2>&1; \
-		helm upgrade --install workload-identity-webhook azure-workload-identity/workload-identity-webhook \
-		--namespace azure-workload-identity-system \
+		helm upgrade --install azwi-webhook azure-workload-identity/workload-identity-webhook \
+		--namespace azwi \
 		--create-namespace \
 		--set azureTenantID=$$TENANT_ID
 	@echo "Installing and configuring Kube VIP..."
@@ -39,9 +39,9 @@ build: ## Build Kubernetes cluster
 	@echo "Installing NGINX as an Ingress Controller using Helm"
 	@helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 	@helm repo update  > /dev/null 2>&1
-	@helm upgrade --install ingress-nginx ingress-nginx \
+	@helm upgrade --install nginx ingress-nginx \
 		--repo https://kubernetes.github.io/ingress-nginx \
-		--namespace ingress-nginx \
+		--namespace ingress \
 		--create-namespace \
 		-f helm/nginx/values.yaml > /dev/null 2>&1
 	@echo "NGINX deployed..."

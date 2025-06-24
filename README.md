@@ -20,13 +20,17 @@ This requires the steps documented [here](https://azure.github.io/azure-workload
 
 The RSA keys must reside in the manifests folder...the script will copy them into the correct location as defined in `kubeadm-config.yaml`.
 
-```json
-{
-  ..
-  service-account-signing-key-file: "/etc/kubernetes/pki/sa.key"
-  service-account-key-file: "/etc/kubernetes/pki/sa.pub"
-  ..
-}
+```yaml
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
+...
+apiServer:
+  extraArgs:
+    service-account-signing-key-file: "/etc/kubernetes/pki/sa.key"
+    service-account-key-file: "/etc/kubernetes/pki/sa.pub"
+    ...
+  ...
+...
 ```
 
 Steps:
