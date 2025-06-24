@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euxo pipefail
+set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
 
 # Static IP from Vagrant environment
@@ -118,7 +118,10 @@ echo "✅ Kubernetes ${K8S_VERSION} setup complete."
 JOIN_FILE="/vagrant/shared/join.sh"
 
 # 8. Initialize Kubernetes master node
-echo "🚀 Initializing Kubernetes master node..."
+echo "Copy Service Account RSA Keys"
+mkdir -p /etc/kubernetes/pki
+cp /vagrant/manifests/sa.* /etc/kubernetes/pki/
+echo "🚀 Initializing Kubernetes master node...🔐 Using Federated Identity"
 kubeadm init --config="/vagrant/manifests/kubeadm-config.yml"
 
 # 9. Set up kubeconfig for root user

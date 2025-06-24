@@ -49,9 +49,9 @@ Vagrant.configure("2") do |config|
             node.vm.synced_folder "shared", "/vagrant/shared", type: "virtualbox"
             if role == "master"
                 node.vm.synced_folder "manifests", "/vagrant/manifests", type: "virtualbox"
-                node.vm.provision "shell", path: "scripts/master.sh", env: { "STATIC_IP" => ip}
+                node.vm.provision "shell", path: "scripts/master.sh", env: { "STATIC_IP" => ip }
             elsif role == "worker"
-                node.vm.provision "shell", path: "scripts/worker.sh", env: { "STATIC_IP" => ip}
+                node.vm.provision "shell", path: "scripts/worker.sh", env: { "STATIC_IP" => ip }
             end
         end
     end
