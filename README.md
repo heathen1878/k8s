@@ -16,9 +16,34 @@ The cluster comprises of....
 
 Added Federated Identity functionality. 
 
-This requires the steps documented [here](https://azure.github.io/azure-workload-identity/docs/introduction.html) are followed...
+This requires the steps documented [here](https://azure.github.io/azure-workload-identity/docs/introduction.html) are followed...but in summary
 
-The RSA keys must reside in the manifests folder...the script will copy them into the correct location as defined in `kubeadm-config.yaml`.
+- Create a RSA key pair
+
+```shell
+# Generate a private key
+openssl genrsa -out sa.key 2048
+
+# Generate a public key from the private key
+openssl rsa -in sa.key -pubout -out sa.pub
+```
+
+- Create a Storage Account with container e.g. oidc
+- Generate the discovery document
+- Upload the discovery document to the container above
+  - .well-known/openid-configuration
+- Generate a JWKS document
+
+```shell
+azwi jwks --public-keys sa.pub --output-file ./configuration/jwks.json
+```
+
+- Upload the JWKS document to the container above
+  - openid/v1/jwks
+
+- Configure Kubenetes to use Federated Identity
+
+*The RSA keys must reside in the manifests folder...the script will copy them into the correct location as defined in `kubeadm-config.yaml`.*
 
 ```yaml
 apiVersion: kubeadm.k8s.io/v1beta3
