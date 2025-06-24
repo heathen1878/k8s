@@ -91,12 +91,19 @@ make build
 ![](assets/build1.png)
 
 ___
+Cluster built
+
 ![](assets/build2.png)
 
 ___
-Azure Workload Identity 
-![](assets/build3.png)
+NGINX using Kube VIP
 
+![](assets/build4.png)
+
+___
+Azure Workload Identity
+
+![](assets/build3.png)
 ___
 
 ```shell
