@@ -93,6 +93,12 @@ make build
 ___
 ![](assets/build2.png)
 
+___
+Azure Workload Identity 
+![](assets/build3.png)
+
+___
+
 ```shell
 # To SSH into the nodes
 make ssh-[ master | worker1 | worker2 ]
