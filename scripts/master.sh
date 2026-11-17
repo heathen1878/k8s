@@ -3,7 +3,7 @@ set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
 
 # Static IP from Vagrant environment
-STATIC_IP="${STATIC_IP:-192.168.188.10}"
+STATIC_IP="${STATIC_IP:-192.168.178.10}"
 
 # Detect current default interface
 DEFAULT_IFACE=$(ip route | awk '/^default/ {print $5}' | head -n 1)
@@ -27,7 +27,7 @@ network:
         addresses: [8.8.8.8]
       routes:
         - to: default
-          via: 192.168.188.1
+          via: 192.168.178.1
 EOF
 
 # Set permissions for netplan config
@@ -49,7 +49,7 @@ echo "127.0.0.1 $(hostname)" >> /etc/hosts
 echo "✅ Master node static IP and hostname configured: $STATIC_IP"
 
 # Variables
-K8S_VERSION="v1.30"  # Change to v1.29, v1.28 etc. as needed
+K8S_VERSION="v1.37"  # Change to v1.29, v1.28 etc. as needed
 K8S_KEYRING=/etc/apt/keyrings/kubernetes-apt-keyring.gpg
 PAUSE_IMAGE="registry.k8s.io/pause:3.9"
 CONTAINERD_CONFIG=/etc/containerd/config.toml
@@ -130,13 +130,22 @@ mkdir -p /home/vagrant/.kube
 cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
 chown vagrant:vagrant /home/vagrant/.kube/config
 
-# 10. Install Flannel CNI
-echo "🌐 Installing Flannel CNI..."
-su - vagrant -c "kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml"
+# 10. Install Cilium CNI
+echo "🌐 Installing Cilium CNI..."
+CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)
+CLI_ARCH=amd64
+cd /tmp
+curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
+sha256sum --check cilium-linux-${CLI_ARCH}.tar.gz.sha256sum
+tar xzf cilium-linux-${CLI_ARCH}.tar.gz -C /usr/local/bin
+rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
+
+su - vagrant -c "cilium install --set ipam.mode=kubernetes"
+su - vagrant -c "cilium status --wait"
+su - vagrant -c "cilium hubble enable --ui"
 
 # 11. Generate join command for worker nodes
 echo "🔗 Generating join command for workers..."
 kubeadm token create --print-join-command > "$JOIN_FILE"
 chmod +x "$JOIN_FILE"
-
 echo "✅ Master initialization complete. Join command written to $JOIN_FILE"

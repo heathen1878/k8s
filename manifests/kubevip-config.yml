@@ -4,16 +4,15 @@ metadata:
   name: kubevip
   namespace: kube-system
 data:
-  range-global: 192.168.188.240-192.168.188.250
-  range-votingapp: 192.168.188.210-192.168.188.211
-  range-ddd: 192.168.188.212-192.168.188.215
+  range-global: 192.168.178.200-192.168.178.220
+  range-ddd: 192.168.188.221-192.168.188.225
 ---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
     app.kubernetes.io/name: kube-vip
-    app.kubernetes.io/version: v0.9.1
+    app.kubernetes.io/version: v1.2.1
   name: kube-vip
   namespace: kube-system
 spec:
@@ -24,7 +23,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: kube-vip
-        app.kubernetes.io/version: v0.9.1
+        app.kubernetes.io/version: v1.2.1
     spec:
       affinity:
         nodeAffinity:
@@ -44,7 +43,7 @@ spec:
           - --interface=enp0s8
           - --arp
           - --leaderElection
-         image: ghcr.io/kube-vip/kube-vip:v0.9.1
+         image: ghcr.io/kube-vip/kube-vip:v1.2.1
          imagePullPolicy: IfNotPresent
          securityContext:
            capabilities:

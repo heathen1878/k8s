@@ -2,7 +2,7 @@
 set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
 
-STATIC_IP="${STATIC_IP:-192.168.188.20}"
+STATIC_IP="${STATIC_IP:-192.168.178.150}"
 JOIN_SCRIPT="/vagrant/shared/join.sh"
 
 # Detect current default interface
@@ -25,7 +25,7 @@ network:
         addresses: [8.8.8.8]
       routes:
         - to: default
-          via: 192.168.188.1
+          via: 192.168.178.1
 EOF
 
 # Set permissions for netplan config
@@ -44,7 +44,7 @@ hostnamectl set-hostname "$(hostname)"
 echo "127.0.0.1 $(hostname)" >> /etc/hosts
 
 # Variables
-K8S_VERSION="v1.30"  # Change to v1.29, v1.28 etc. as needed
+K8S_VERSION="v1.37"  # Change to v1.29, v1.28 etc. as needed
 K8S_KEYRING=/etc/apt/keyrings/kubernetes-apt-keyring.gpg
 PAUSE_IMAGE="registry.k8s.io/pause:3.9"
 CONTAINERD_CONFIG=/etc/containerd/config.toml

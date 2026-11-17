@@ -45,6 +45,10 @@ build: ## Build Kubernetes cluster
 		--create-namespace \
 		-f helm/nginx/values.yaml > /dev/null 2>&1
 	@echo "NGINX deployed..."
+	@echo "Deploy Hubble Ingress"
+	@kubectl apply -f manifests/hubble.yml
+	@echo "Hubble Ingress"
+	@kubectl get ingress -A
 
 rebuild: ## Rebuild entire cluster
 	@echo "🔁 Destroying and rebuilding Kubernetes cluster..."
