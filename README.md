@@ -58,6 +58,10 @@ apiServer:
 ...
 ```
 
+## Version 2.0.0
+
+Updated the Network CNI to use Cilium - this is to learn about network policies
+
 # Steps
 
 ```shell
